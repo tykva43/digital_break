@@ -24,41 +24,185 @@ const SchedulePicker = ({ onValueChange, target }) => {
 
     return w
 }
+const TimeRangePicker = ({ onValueChange }) => {
+    let w = $('<div>').addClass('schedule-picker')
+    var start, end
+    var selectStarted = false
+    const target = new Array(24).fill('').map((_, i) => i)
+    target.forEach(item => {
+        let dayEl = $('<div>').text(item)
+        dayEl.on('click', function() {
+            if (!selectStarted){
+                dayEl.siblings().each(function(){
+                    if ($(this).hasClass('selected'))
+                        $(this).toggleClass('selected')
+                })
+                $(this).addClass('selected')
+                selectStarted = $(this)
+            } else{
+                let i = selectStarted.index()
+                if (i < $(this).index()){
+                    start = target[i]
+                    stop = target[$(this).index()]
+                }
+                else{
+                    stop = target[i]
+                    start = target[$(this).index()]
+                }
+                onValueChange(start, stop)
+                let h = selectStarted.index() - $(this).index() < 0 ? 1 : -1
+                while(i != $(this).index()){
+                    console.log(i, $(this).index())
+                    $(dayEl.parent().children().get(i)).addClass('selected')
+                    i += h
+                }
+                $(this).addClass('selected')
 
-const NewContractForm = (view) => {
+                selectStarted = false
+            }
+        })
+        dayEl.on('mouseenter', function(){
+            console.log($(this).index())
+            if (selectStarted){
+                let i = selectStarted.index()
 
+                let h = selectStarted.index() - $(this).index() < 0 ? 1 : -1
+                while (i != $(this).index()){
+
+                    $(dayEl.parent().children().get(i)).addClass('hover')
+                    i += h
+                }
+            }
+        })
+        dayEl.on('mouseleave', _ => dayEl.siblings().each(function(){
+            if ($(this).hasClass('hover'))
+                $(this).toggleClass('hover')
+
+        }))
+        w.append(dayEl)
+    })
+
+
+
+    return w
+}
+
+const Modal = ({}) => {
+    const component = {}
+    const overlay = $('<div>').addClass('overlay')
+    $('body').append(overlay)
+    const overlayState = {
+        overlayVisible: true,
+        scrollPosition: 0
+    }
+    const wrapper = $('<div>').addClass('modal-wrapper')
+    const vp = $('<div>').addClass('viewPort')
+    const header = $('<div>').addClass('head')
+    const footer = $('<div>').addClass('foot')
+        .append($('<div class=bottomButtons>')
+            .append($('<button class="accept">').text('Применить'))
+            .append($('<button class="decline">').text('Отменить'))
+            .append($('<button class="ok">').text('Ok'))
+        )
+    $('body').append(wrapper)
+    $('body').animate({scrollTop: $('body').height() - 100}, 100)
+    wrapper.append($('<div class="lock">'))
+    wrapper.append(header)
+    wrapper.append(vp)
+    wrapper.append(footer)
+
+    overlay.click(function(){
+        if (overlayState.overlayVisible){
+            $(this).fadeOut(100)
+            overlayState.scrollPosition = $('body').scrollTop()
+            $('body').animate({scrollTop: 0}, 100, 'swing', setTimeout(_=>$(document).bind('scroll', show), 150))
+        }
+        overlayState.overlayVisible = false
+        wrapper.addClass('hidden')
+    })
+    let show = function(){
+        $(document).unbind('scroll', show)
+        if (!overlayState.overlayVisible){
+            overlay.fadeIn(100)
+            $('body').animate({scrollTop: overlayState.scrollPosition}, 100)
+            overlayState.overlayVisible = true
+        }
+        if (wrapper.hasClass('hidden'))
+            wrapper.toggleClass('hidden')
+
+    }
+    wrapper.on('click', show)
+    return wrapper
+}
+
+const NewContractForm = ({onValueChange}) => {
+    const view = $('<div>').addClass('form')
     const formState = {}
 
     const adressPicker = AdressPicker({
         onSelectAdress: value => {
-            formState['adresses'] = value
-            console.log(formState)
+            formState['addresses'] = value
+            onValueChange(formState)
         }
     })
     const countPicker = CountPicker({
-        onValueChange: value => formState['count'] = value,
+        onValueChange: value => {
+            formState['count'] = value
+            onValueChange(formState)
+        },
         title: 'Желаемое количество рекламных контактов',
         target: [500, 1000, 2000, 5000, 10000]
     })
     const freqPicker = CountPicker({
-        onValueChange: value => formState['count'] = value,
+        onValueChange: value => {
+            formState['count'] = value
+            onValueChange(formState)
+        },
         title: 'Частота показов в час',
         target: [6, 9, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72]
     })
     const weekPicker = SchedulePicker({
-        onValueChange: value => formState['schedule'] = {
-            ...formState['schedule'],
-            days: value
+        onValueChange: value => {
+            formState['schedule'] = {
+                ...formState['schedule'],
+                days: value
+            }
+            onValueChange(formState)
         },
         target: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
     })
-    const hourPicker = SchedulePicker({
-        onValueChange: value => formState['schedule'] = {
-            ...formState['schedule'],
-            hours: value
-        },
-        target: new Array(24).fill('').map((_, index) => index)
+//    const hourPicker = SchedulePicker({
+//        onValueChange: value => {
+//            formState['schedule'] = {
+//                ...formState['schedule'],
+//                hours: value
+//            }
+//            onValueChange(formState)
+//        },
+//        target: new Array(24).fill('').map((_, index) => index)
+//    })
+    const hourPicker = TimeRangePicker({
+        onValueChange: (start, end) => {
+            formState['schedule'] = {
+                ...formState['schedule'],
+                time_start: start,
+                time_end: end
+            }
+            onValueChange(formState)
+        }
     })
+    const dateRangePicker = $('<input>').daterangepicker({
+        minDate: new Date(),
+        locale: {
+            format: 'DD.MM.YYYY'
+        }
+    }, function(start, end){
+        formState['schedule'] = {
+            ...formState['schedule'],
+            dateRange: [start, end]
+        }
+        onValueChange(formState)
+    });
 
     view.append($('<h4>Адресная программа</h4>'))
     view.append($('<div class="map-frame">')
@@ -68,16 +212,16 @@ const NewContractForm = (view) => {
     view.append(countPicker)
 
     view.append($('<h4>Период</h4>'))
+    view.append(dateRangePicker)
     view.append($('<h4>Дни недели</h4>'))
     view.append(weekPicker)
     view.append($('<h4>Часовой интервал</h4>'))
     view.append(hourPicker)
     view.append(freqPicker)
 
-    view.append($('<div>').addClass('footer')
-        .append($('<button>').text('Сохранить').addClass('accent'))
-        .append($('<button>').text('Отменить'))
-    )
+
+
+    return view
 
 }
 

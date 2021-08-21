@@ -3,11 +3,24 @@ body {
   padding: 0;
   width: 100%;
   height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+body #control-panel {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
 }
 
 body .map {
-  flex: 1;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
 }
 
 body .map .player {
@@ -16,8 +29,50 @@ body .map .player {
   width: 20px;
   aspect-ratio: 4/3;
   border: 1px solid;
-  box-shadow: 0 0 4px #00000094;
+  -webkit-box-shadow: 0 0 4px #00000094;
+          box-shadow: 0 0 4px #00000094;
   cursor: pointer;
+}
+
+body .overlay{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,.5);
+}
+
+body #control-panel .map{
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+}
+
+body .modal-wrapper.hidden:not(:hover){
+    transform: translate(-50%, 60px)
+}
+
+
+body .modal-wrapper{
+    width: 650px;
+    position: absolute;
+    left: 50%;
+    transition: transform .3s ease-in-out;
+    transform: translateX(-50%);
+    margin-top: calc(100vh - 100px);
+    min-height: 100px;
+    background: white;
+    box-shadow: 0 0 6px black;
+    padding: 16px;
+}
+
+body .map .fly-to-nsk{
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    background: white;
+    z-index: 1;
+    cursor: pointer
 }
 
 body .map .player:hover {
@@ -28,20 +83,81 @@ body .map .player.selected {
   background: green;
 }
 
-body .form {
-  width: 450px;
-  margin: auto;
-  padding: 16px;
-  box-shadow: 0 0 6px black;
+body .modal-wrapper .head{
+    position: sticky;
+    top: 0;
+    //padding: 16px;
+    background: white;
+    display: flex;
+    z-index: 2
 }
 
-body .form > .footer {
+body .modal-wrapper .head .back i{
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    align-items: center;
+    padding: 0 4px
+}
+body .modal-wrapper .lock{
+    display: none;
+    position: absolute;
+    width: 100%;
+    background: #ffffffa6;
+    height: 100%;
+    z-index: 3;
+    left: 0;
+    top: 0;
+}
+
+body .modal-wrapper .head .back i:hover{
+    background: aliceblue
+}
+
+body .modal-wrapper .head p{
+    margin: 16px 10px;
+    font-size: 18px;
+}
+
+.flat-list{
+    margin: 0;
+    padding: 0;
+    list-style: none
+}
+.flat-list li{
+    margin: 0;
+    padding: 16px;
+    display: flex;
+    position: relative
+}
+.flat-list.selectable li{
+    cursor: pointer
+}
+.flat-list.selectable li:hover{
+    background: aliceblue
+}
+.flat-list.selectable li:active{
+    box-shadow: 0 0 2px black
+}
+
+
+body .modal-wrapper > .foot {
+    position: sticky;
+    bottom: 0;
+    margin-top: 4px;
+    background: white;
+    z-index: 2;
   padding: 16px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: row-reverse;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: reverse;
+      -ms-flex-direction: row-reverse;
+          flex-direction: row-reverse;
 }
 
-body .form > .footer button {
+body .modal-wrapper > .foot button {
   margin-left: 16px;
   padding: 8px 16px;
   border: none;
@@ -51,16 +167,27 @@ body .form > .footer button {
   cursor: pointer;
 }
 
-body .form > .footer button.accent {
+body .modal-wrapper > .foot .bottomButtons{
+    display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: reverse;
+      -ms-flex-direction: row-reverse;
+          flex-direction: row-reverse;
+}
+
+body .modal-wrapper > .foot button.accept {
   background: green;
 }
 
-body .form > .footer button:hover {
+body .modal-wrapper > .foot button:hover {
   opacity: 0.9;
 }
 
-body .form > .footer button:active {
-  box-shadow: 0 0 2px black;
+body .form > .foot button:active {
+  -webkit-box-shadow: 0 0 2px black;
+          box-shadow: 0 0 2px black;
 }
 
 body .form .slider {
@@ -68,6 +195,8 @@ body .form .slider {
 }
 
 body .form .schedule-picker {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   max-width: 100%;
   margin: 0 8px;
@@ -80,7 +209,8 @@ body .form .schedule-picker div {
   border-radius: 4px;
 }
 
-body .form .schedule-picker div:hover {
+body .form .schedule-picker div:hover,
+body .form .schedule-picker div.hover{
   background: aliceblue;
 }
 
@@ -99,5 +229,8 @@ body .form .schedule-picker div.selected + .selected {
 body .form .map-frame {
   width: 100%;
   aspect-ratio: 4/3;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
 }
+/*# sourceMappingURL=index.css.map */
