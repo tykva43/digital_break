@@ -1,56 +1,13 @@
 
-
-const MainHost = ({}) => {
-
-    var state = {
-        current: CompanyList({
-            onSelect: company => navigate({
-                component: CompanyInfo({company})
-            }),
-            onAdd: _ => navigate({
-                component: NewContractForm({})
-            })
-        }),
-        backStack: [],
-        title: 'Лист компаний'
-    }
-    const navigate = ({component}) => {
-        let old = {current: state.current, title: state.title}
-        state.backStack.unshift(old)
-        state.current = component
-        setState(state)
-    }
-    const pop = () => {
-        let old = state.backStack.pop(0)
-        state.current = old.current
-        state.title = old.title
-        setState(state)
-    }
-    const setState = (newState) => {
-        state = newState
-        render()
-    }
-    const render = () => {
-        content.children().remove()
-        content.append(state.current)
-        if (state.backStack.length > 0){
-            view.setBack(_ => pop())
-        }
-        else{
-            view.setBack(null)
-        }
-    }
-    const content = $('<div>')
-    const view = Modal({content})
-    render()
-
-
+$(document).ready(_=>{
+    const view = Modal({})
+    NAVGRAPH.initMenu(view)
     return view
-}
+})
 
 const ControlPanel = ({view}) => {
 
-    const mainHost = MainHost({})
+
 
     const CheckPosition = ({bounds, center}) => {
         if (map.getZoom() < 6)
