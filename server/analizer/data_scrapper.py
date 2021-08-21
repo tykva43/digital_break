@@ -46,7 +46,7 @@ def filter_df_in(df, filter_field, filter_list):
 def filter_by_timestamp(df):
     indexes_for_deletion = []
     for index, row in df.iterrows():
-        time = datetime.datetime.fromtimestamp(row['AddedOnTick']).time()
+        time = datetime.datetime.fromtimestamp(int(row['AddedOnTick'])/1000).time()
         seconds = datetime.timedelta(minutes=time.minute, seconds=time.second).seconds
         t = int(seconds // 55)
         if (55 * t > seconds) or (55 * t + 5 > seconds):
@@ -88,7 +88,7 @@ def aggregate_by_daytime(path, player, i):
         filtered_df = filter_df_in(df=raw_df, filter_field='AddedOnDate', filter_list=dates)
         filtered_df = filter_by_timestamp(filtered_df)
         for h in range(24):
-            filtered_df = filtered_df[datetime.datetime.fromtimestamp(filtered_df['AddedOnTick']).hour == h]
+            filtered_df = filtered_df[datetime.datetime.fromtimestamp(int(filtered_df['AddedOnTick'])/1000).hour == h]
             l_by_week.append({'player': player,
                               'type': 'daytime',
                               'param': 'by_week',
@@ -127,8 +127,9 @@ def aggregate_crowd():
         player_id = get_player_id_by_dir_name(dir['dir'])
         print('started ', player_id)
         for file in dir['files']:
-            i = aggregate_by_weekday(path=os.path.join(crowd_file_path, dir['dir'], file), player=player_id, i=i)
+            i = aggregate_by_daytime(path=os.path.join(crowd_file_path, dir['dir'], file), player=player_id, i=i)
+            # i = aggregate_by_weekday(path=os.path.join(crowd_file_path, dir['dir'], file), player=player_id, i=i)
 
 # print(get_all_files_in_dirs(crowd_file_path))
-# aggregate_crowd()
+aggregate_crowd()
 # print('ready_crowd')
