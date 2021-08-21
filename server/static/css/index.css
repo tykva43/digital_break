@@ -23,7 +23,8 @@ body .map {
           flex: 1;
 }
 
-body .map .player {
+body .map .player,
+body .map .big-player {
   display: block;
   background: whitesmoke;
   width: 20px;
@@ -32,6 +33,17 @@ body .map .player {
   -webkit-box-shadow: 0 0 4px #00000094;
           box-shadow: 0 0 4px #00000094;
   cursor: pointer;
+}
+body .map .big-player{
+    transition: width .3s;
+    width: 26px;
+}
+body .map .big-player:hover,
+body .map .big-player.selected{
+    width: 30px;
+}
+body .map .big-player.selected{
+    background: blue
 }
 
 body .overlay{
@@ -47,10 +59,16 @@ body #control-panel .map{
     width: 100vw;
 }
 
+body .modal-wrapper.hidden:not(:hover){
+    transform: translate(-50%, 60px)
+}
+
+
 body .modal-wrapper{
     width: 650px;
     position: absolute;
     left: 50%;
+    transition: transform .3s ease-in-out;
     transform: translateX(-50%);
     margin-top: calc(100vh - 100px);
     min-height: 100px;
@@ -66,7 +84,19 @@ body .map .fly-to-nsk{
     display: flex;
     background: white;
     z-index: 1;
-    cursor: pointer
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    font-size: 3em;
+    border-radius: 16px;
+    margin: 8px;
+    box-shadow: 0 0 4px black;
+}
+body .map .fly-to-nsk:hover{
+    background: aliceblue
+}
+body .map .fly-to-nsk:active{
+    box-shadow: 0 0 6px black
 }
 
 body .map .player:hover {
@@ -77,18 +107,68 @@ body .map .player.selected {
   background: green;
 }
 
-body .modal-wrapper .header{
+body .modal-wrapper .head{
     position: sticky;
     top: 0;
-    padding: 16px;
+    //padding: 16px;
     background: white;
     display: flex;
     z-index: 2
 }
 
-body .form > .footer {
+body .modal-wrapper .head .back i{
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    align-items: center;
+    padding: 0 4px
+}
+body .modal-wrapper .lock{
+    display: none;
+    position: absolute;
+    width: 100%;
+    background: #ffffffa6;
+    height: 100%;
+    z-index: 3;
+    left: 0;
+    top: 0;
+}
+
+body .modal-wrapper .head .back i:hover{
+    background: aliceblue
+}
+
+body .modal-wrapper .head p{
+    margin: 16px 10px;
+    font-size: 18px;
+}
+
+.flat-list{
+    margin: 0;
+    padding: 0;
+    list-style: none
+}
+.flat-list li{
+    margin: 0;
+    padding: 16px;
+    display: flex;
+    position: relative
+}
+.flat-list.selectable li{
+    cursor: pointer
+}
+.flat-list.selectable li:hover{
+    background: aliceblue
+}
+.flat-list.selectable li:active{
+    box-shadow: 0 0 2px black
+}
+
+
+body .modal-wrapper > .foot {
     position: sticky;
     bottom: 0;
+    margin-top: 4px;
     background: white;
     z-index: 2;
   padding: 16px;
@@ -101,7 +181,7 @@ body .form > .footer {
           flex-direction: row-reverse;
 }
 
-body .form > .footer button {
+body .modal-wrapper > .foot button {
   margin-left: 16px;
   padding: 8px 16px;
   border: none;
@@ -111,15 +191,25 @@ body .form > .footer button {
   cursor: pointer;
 }
 
-body .form > .footer button.accent {
+body .modal-wrapper > .foot .bottomButtons{
+    display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: reverse;
+      -ms-flex-direction: row-reverse;
+          flex-direction: row-reverse;
+}
+
+body .modal-wrapper > .foot button.accept {
   background: green;
 }
 
-body .form > .footer button:hover {
+body .modal-wrapper > .foot button:hover {
   opacity: 0.9;
 }
 
-body .form > .footer button:active {
+body .form > .foot button:active {
   -webkit-box-shadow: 0 0 2px black;
           box-shadow: 0 0 2px black;
 }
@@ -143,7 +233,8 @@ body .form .schedule-picker div {
   border-radius: 4px;
 }
 
-body .form .schedule-picker div:hover {
+body .form .schedule-picker div:hover,
+body .form .schedule-picker div.hover{
   background: aliceblue;
 }
 

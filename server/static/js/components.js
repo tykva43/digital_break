@@ -24,8 +24,70 @@ const SchedulePicker = ({ onValueChange, target }) => {
 
     return w
 }
+const TimeRangePicker = ({ onValueChange }) => {
+    let w = $('<div>').addClass('schedule-picker')
+    var start, end
+    var selectStarted = false
+    const target = new Array(24).fill('').map((_, i) => i)
+    target.forEach(item => {
+        let dayEl = $('<div>').text(item)
+        dayEl.on('click', function() {
+            if (!selectStarted){
+                dayEl.siblings().each(function(){
+                    if ($(this).hasClass('selected'))
+                        $(this).toggleClass('selected')
+                })
+                $(this).addClass('selected')
+                selectStarted = $(this)
+            } else{
+                let i = selectStarted.index()
+                if (i < $(this).index()){
+                    start = target[i]
+                    stop = target[$(this).index()]
+                }
+                else{
+                    stop = target[i]
+                    start = target[$(this).index()]
+                }
+                onValueChange(start, stop)
+                let h = selectStarted.index() - $(this).index() < 0 ? 1 : -1
+                while(i != $(this).index()){
+                    console.log(i, $(this).index())
+                    $(dayEl.parent().children().get(i)).addClass('selected')
+                    i += h
+                }
+                $(this).addClass('selected')
 
-const Modal = ({content, options, closable, onBackClick}) => {
+                selectStarted = false
+            }
+        })
+        dayEl.on('mouseenter', function(){
+            console.log($(this).index())
+            if (selectStarted){
+                let i = selectStarted.index()
+
+                let h = selectStarted.index() - $(this).index() < 0 ? 1 : -1
+                while (i != $(this).index()){
+
+                    $(dayEl.parent().children().get(i)).addClass('hover')
+                    i += h
+                }
+            }
+        })
+        dayEl.on('mouseleave', _ => dayEl.siblings().each(function(){
+            if ($(this).hasClass('hover'))
+                $(this).toggleClass('hover')
+
+        }))
+        w.append(dayEl)
+    })
+
+
+
+    return w
+}
+
+const Modal = ({}) => {
     const component = {}
     const overlay = $('<div>').addClass('overlay')
     $('body').append(overlay)
@@ -34,13 +96,19 @@ const Modal = ({content, options, closable, onBackClick}) => {
         scrollPosition: 0
     }
     const wrapper = $('<div>').addClass('modal-wrapper')
-    const header = $('<div>').addClass('header')
-        .append($('<p>').text('<').click(onBackClick))
-    const footer = $('<div>').addClass('footer')
+    const vp = $('<div>').addClass('viewPort')
+    const header = $('<div>').addClass('head')
+    const footer = $('<div>').addClass('foot')
+        .append($('<div class=bottomButtons>')
+            .append($('<button class="accept">').text('Применить'))
+            .append($('<button class="decline">').text('Отменить'))
+            .append($('<button class="ok">').text('Ok'))
+        )
     $('body').append(wrapper)
     $('body').animate({scrollTop: $('body').height() - 100}, 100)
+    wrapper.append($('<div class="lock">'))
     wrapper.append(header)
-    wrapper.append(content)
+    wrapper.append(vp)
     wrapper.append(footer)
 
     overlay.click(function(){
@@ -50,6 +118,7 @@ const Modal = ({content, options, closable, onBackClick}) => {
             $('body').animate({scrollTop: 0}, 100, 'swing', setTimeout(_=>$(document).bind('scroll', show), 150))
         }
         overlayState.overlayVisible = false
+        wrapper.addClass('hidden')
     })
     let show = function(){
         $(document).unbind('scroll', show)
@@ -58,54 +127,70 @@ const Modal = ({content, options, closable, onBackClick}) => {
             $('body').animate({scrollTop: overlayState.scrollPosition}, 100)
             overlayState.overlayVisible = true
         }
+        if (wrapper.hasClass('hidden'))
+            wrapper.toggleClass('hidden')
 
     }
     wrapper.on('click', show)
-    component.setBack = (callback) => {
-        header.children('p').off('click').on('click', callback)
-    }
-    component.setTitle = title => {
-        header.children('h4').text(title)
-    }
-    component.setOptions = options => {
-
-    }
-    return component
+    wrapper.open = show
+    return wrapper
 }
 
-const NewContractForm = ({}) => {
+const NewContractForm = ({onValueChange}) => {
     const view = $('<div>').addClass('form')
     const formState = {}
 
     const adressPicker = AdressPicker({
         onSelectAdress: value => {
-            formState['adresses'] = value
-            console.log(formState)
+            formState['addresses'] = value
+            onValueChange(formState)
         }
     })
     const countPicker = CountPicker({
-        onValueChange: value => formState['count'] = value,
+        onValueChange: value => {
+            formState['count'] = value
+            onValueChange(formState)
+        },
         title: 'Желаемое количество рекламных контактов',
         target: [500, 1000, 2000, 5000, 10000]
     })
     const freqPicker = CountPicker({
-        onValueChange: value => formState['count'] = value,
+        onValueChange: value => {
+            formState['count'] = value
+            onValueChange(formState)
+        },
         title: 'Частота показов в час',
         target: [6, 9, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72]
     })
     const weekPicker = SchedulePicker({
-        onValueChange: value => formState['schedule'] = {
-            ...formState['schedule'],
-            days: value
+        onValueChange: value => {
+            formState['schedule'] = {
+                ...formState['schedule'],
+                days: value
+            }
+            onValueChange(formState)
         },
         target: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
     })
-    const hourPicker = SchedulePicker({
-        onValueChange: value => formState['schedule'] = {
-            ...formState['schedule'],
-            hours: value
-        },
-        target: new Array(24).fill('').map((_, index) => index)
+//    const hourPicker = SchedulePicker({
+//        onValueChange: value => {
+//            formState['schedule'] = {
+//                ...formState['schedule'],
+//                hours: value
+//            }
+//            onValueChange(formState)
+//        },
+//        target: new Array(24).fill('').map((_, index) => index)
+//    })
+    const hourPicker = TimeRangePicker({
+        onValueChange: (start, end) => {
+            formState['schedule'] = {
+                ...formState['schedule'],
+                time_start: start,
+                time_end: end
+            }
+            onValueChange(formState)
+        }
     })
     const dateRangePicker = $('<input>').daterangepicker({
         minDate: new Date(),
@@ -117,6 +202,7 @@ const NewContractForm = ({}) => {
             ...formState['schedule'],
             dateRange: [start, end]
         }
+        onValueChange(formState)
     });
 
     view.append($('<h4>Адресная программа</h4>'))
@@ -134,10 +220,7 @@ const NewContractForm = ({}) => {
     view.append(hourPicker)
     view.append(freqPicker)
 
-    view.append($('<div>').addClass('footer')
-        .append($('<button>').text('принять').addClass('accent'))
-        .append($('<button>').text('отменить'))
-    )
+
 
     return view
 
@@ -191,29 +274,32 @@ const AdressPicker = ({ onSelectAdress }) => {
                 pitch: 60
             });
             console.log(map)
-            players.forEach(player => {
-                let el = $('<div>').addClass('player')
+            map.on('load', _ => {
+                 players.forEach(player => {
+                    let el = $('<div>').addClass('player')
 
-                el.on('click', function() {
+                    el.on('click', function() {
 
-                    if ($(this).hasClass('selected')) {
-                        adresses[player.PlayerId] = false
-                    } else {
-                        adresses[player.PlayerId] = true
-                    }
-                    onSelectAdress(
-                        Object.keys(adresses).filter(
-                            x => adresses[x] == true
+                        if ($(this).hasClass('selected')) {
+                            adresses[player.PlayerId] = false
+                        } else {
+                            adresses[player.PlayerId] = true
+                        }
+                        onSelectAdress(
+                            Object.keys(adresses).filter(
+                                x => adresses[x] == true
+                            )
                         )
-                    )
-                    $(this).toggleClass('selected')
+                        $(this).toggleClass('selected')
 
+                    })
+
+                    let marker = new mapboxgl.Marker(el.get(0))
+                        .setLngLat([player.GeoLon, player.GeoLat])
+                        .addTo(map)
                 })
-
-                let marker = new mapboxgl.Marker(el.get(0))
-                    .setLngLat([player.GeoLon, player.GeoLat])
-                    .addTo(map)
             })
+
         }
 
     }
