@@ -45,6 +45,18 @@ def filter_df_in(df, filter_field, filter_list):
     return new_df
 
 
+def filter_by_timestamp(df):
+    indexes_for_deletion = []
+    for index, row in df.iterrows():
+        time = datetime.fromtimestamp(row['AddedOnTick']).time()
+        seconds = datetime.timedelta(minutes=time.minute, seconds=time.second).seconds
+        t = int(seconds//55)
+        if (55*t > seconds) or (55*t+5 > seconds):
+            indexes_for_deletion.append(index)
+    df.drop(indexes_for_deletion)
+    return df
+
+
 def aggregate_by_weekday(path, player, i, chunk_size=50000):
     raw_df = pd.read_parquet(path, engine=ENGINE)
     date = raw_df['AddedOnDate'].iloc[0].to_pydatetime().date()
@@ -52,6 +64,7 @@ def aggregate_by_weekday(path, player, i, chunk_size=50000):
     for weekday in range(1, 8):
         [_, dates] = get_all_weekdays_dates(month=date.month, year=date.year, weekday=weekday)
         filtered_df = filter_df_in(df=raw_df, filter_field='AddedOnDate', filter_list=dates)
+        filtered_df = filter_by_timestamp(filtered_df)
         l_by_month.append({'player': player,
                            'type': 'week_day',
                            'param': 'by_month',
