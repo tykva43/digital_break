@@ -12,8 +12,7 @@ crowd_file_path = '../../raw/crowd/'
 filename_template = 'month={}-{}.{}'
 player_filename_template = 'month={}-{}_player.{}'
 param = {'month': '11', 'year': '2020', 'in_format': 'parquet', 'out_format': 'csv'}
-portion_size = 10000
-
+ENGINE = 'fastparquet'
 # filename = filename_template.format('2020', '11', 'parquet')
 pd.set_option('display.max_columns', None)
 
@@ -46,7 +45,8 @@ def filter_df_in(df, filter_field, filter_list):
     return new_df
 
 
-def aggregate_by_weekday(raw_df, player, i):
+def aggregate_by_weekday(path, player, i, chunk_size=50000):
+    raw_df = pd.read_parquet(path, engine=ENGINE)
     date = raw_df['AddedOnDate'].iloc[0].to_pydatetime().date()
     l_by_month = []
     for weekday in range(1, 8):
@@ -59,12 +59,12 @@ def aggregate_by_weekday(raw_df, player, i):
                            'year': date.year,
                            'additional': weekday,
                            'total': filtered_df.Mac.count() / len(filtered_df.AddedOnDate.unique())})
-        if i > 0:
-            pd.DataFrame(l_by_month).to_csv(path_to_save, mode='a', header=False)
-        else:
-            pd.DataFrame(l_by_month).to_csv(path_to_save, header=True)
-            i = 1
-        l_by_month.clear()
+    if i > 0:
+        pd.DataFrame(l_by_month).to_csv(path_to_save, mode='a', header=False)
+    else:
+        pd.DataFrame(l_by_month).to_csv(path_to_save, header=True)
+    i = 1
+    # l_by_month.clear()
     return i
 
 
@@ -90,13 +90,13 @@ def aggregate_crowd():
         player_id = get_player_id_by_dir_name(dir['dir'])
         print('started ', player_id)
         for file in dir['files']:
-
-            raw_df = pd.read_parquet(path=os.path.join(crowd_file_path, dir['dir'], file), engine='pyarrow')
             # portions_num = math.ceil(raw_df.Mac.count() / portion_size)
             # for portion in range(1, portions_num):
-            i = aggregate_by_weekday(raw_df=raw_df, player=player_id, i=i)
-            raw_df = raw_df.iloc[0:0]
+            i = aggregate_by_weekday(path=os.path.join(crowd_file_path, dir['dir'], file), player=player_id, i=i,
+                                     chunk_size=50000)
+            # raw_df = raw_df.iloc[0:0]
+
 
 # print(get_all_files_in_dirs(crowd_file_path))
-aggregate_crowd()
-print('ready_crowd')
+# aggregate_crowd()
+# print('ready_crowd')
