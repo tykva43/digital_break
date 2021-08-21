@@ -9,11 +9,12 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+print('BASE_DIR', BASE_DIR)
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-g%5p41y=a0r$!-wrkclgkz9cqkb$yxni)j6znrr1b4-3bi*$$@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -54,7 +55,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "../ui/templates"),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -113,13 +114,45 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static_root/')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "../ui/static"),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+USE_BUNDLES = True
+
+BUNDLES = (
+    ('bundle_css', {
+        'type': 'css',
+        'files': (
+            'css/*.css',
+            'css/more/test3.css',
+            'less/test.less',
+        ),
+    }),
+    ('bundle_js', {
+        'type': 'js',
+        'files': (
+            '../../ui/static/js/*.js',
+        )
+    }),
+    ('script_loader_example', {
+        'type': 'js',
+        'files': (
+            'script_loader_example.js',
+        ),
+        'processors': (
+            'django_bundles.processors.django_template.DjangoTemplateProcessor',
+        )
+    }),
+)
