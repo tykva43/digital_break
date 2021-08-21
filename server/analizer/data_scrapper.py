@@ -1,11 +1,15 @@
 import calendar
 import datetime
+import os
 
 import pandas as pd
 
-player_file_path = '../../raw/crowd/player=40/'
-crowd_file_path = '../../raw/crowd/player=40/'
-crowd_filename_template = 'month={}-{}.{}'
+
+player_file_path = '../../raw/player_log/'
+dir_template = 'player={}'
+path_to_save = '../../'
+crowd_file_path = '../../raw/crowd/'
+filename_template = 'month={}-{}.{}'
 player_filename_template = 'month={}-{}_player.{}'
 param = {'month': '11', 'year': '2020', 'in_format': 'parquet', 'out_format': 'csv'}
 
@@ -57,9 +61,30 @@ def aggregate_by_weekday(raw_df):
     return l_by_month
 
 
-raw_df = pd.read_parquet(path=crowd_file_path + crowd_filename_template.format(
-    param['year'], param['month'], param['in_format']), engine='pyarrow')
+def get_all_files_in_dirs(path):
+    file_list = []
+    for root, dirs, files in os.walk(path):
+        for dir in dirs:
+            for root, dirs, files in os.walk(os.path.join(path, dir)):
+                file_list.append({'dir': dir, 'files': files})
+    return file_list
 
-aggregated_data = aggregate_by_weekday(raw_df) + aggregate_by_month(raw_df)
-print('ready')
-pd.DataFrame(aggregated_data).to_csv(player_file_path + 'aggr.csv')
+
+def get_player_id_by_dir_name(dir_name):
+    return int(dir_name.split('=', 1)[1].lstrip())
+
+
+def aggregate_crowd():
+    files = get_all_files_in_dirs()
+    for root, dirs, files in os.walk(player_file_path):
+        for dirs in files:
+            if file.endswith(".parquet"):
+                print(os.path.join(root, file))
+    raw_df = pd.read_parquet(path=crowd_file_path + filename_template.format(
+        param['year'], param['month'], param['in_format']), engine='pyarrow')
+    aggregated_data = aggregate_by_weekday(raw_df) + aggregate_by_month(raw_df)
+    pd.DataFrame(aggregated_data).to_csv(player_file_path + 'aggregated.csv')
+
+print(get_all_files_in_dirs(crowd_file_path))
+# aggregate_crowd()
+print('ready_crowd')
