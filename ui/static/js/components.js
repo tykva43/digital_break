@@ -25,6 +25,16 @@ const SchedulePicker = ({ onValueChange, target }) => {
     return w
 }
 
+const Modal = ({content, options, closable}) => {
+    const overlay = $('<div>').addClass('overlay')
+    $('body').append(overlay)
+
+    const wrapper = $('<div>').addClass('modal-wrapper')
+    $('body').append(wrapper)
+
+
+}
+
 const NewContractForm = (view) => {
 
     const formState = {}
