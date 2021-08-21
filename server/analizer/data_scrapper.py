@@ -1,23 +1,24 @@
 import calendar
 import datetime
+import math
 import os
 
 import pandas as pd
 
-
 player_file_path = '../../raw/player_log/'
 dir_template = 'player={}'
-path_to_save = '../../'
+path_to_save = '../../raw/aggregate.csv'
 crowd_file_path = '../../raw/crowd/'
 filename_template = 'month={}-{}.{}'
 player_filename_template = 'month={}-{}_player.{}'
 param = {'month': '11', 'year': '2020', 'in_format': 'parquet', 'out_format': 'csv'}
+portion_size = 10000
 
 # filename = filename_template.format('2020', '11', 'parquet')
 pd.set_option('display.max_columns', None)
 
 
-def aggregate_by_month(raw_df):
+def aggregate_by_month(raw_df, player):
     date = raw_df['AddedOnDate'].iloc[0].to_pydatetime().date()
     return [{'type': 'by_month',
              'param': None,
@@ -45,20 +46,26 @@ def filter_df_in(df, filter_field, filter_list):
     return new_df
 
 
-def aggregate_by_weekday(raw_df):
+def aggregate_by_weekday(raw_df, player, i):
     date = raw_df['AddedOnDate'].iloc[0].to_pydatetime().date()
     l_by_month = []
     for weekday in range(1, 8):
         [_, dates] = get_all_weekdays_dates(month=date.month, year=date.year, weekday=weekday)
         filtered_df = filter_df_in(df=raw_df, filter_field='AddedOnDate', filter_list=dates)
-        l_by_month.append({'type': 'week_day',
+        l_by_month.append({'player': player,
+                           'type': 'week_day',
                            'param': 'by_month',
                            'month': date.month,
                            'year': date.year,
                            'additional': weekday,
                            'total': filtered_df.Mac.count() / len(filtered_df.AddedOnDate.unique())})
-
-    return l_by_month
+        if i > 0:
+            pd.DataFrame(l_by_month).to_csv(path_to_save, mode='a', header=False)
+        else:
+            pd.DataFrame(l_by_month).to_csv(path_to_save, header=True)
+            i = 1
+        l_by_month.clear()
+    return i
 
 
 def get_all_files_in_dirs(path):
@@ -75,16 +82,21 @@ def get_player_id_by_dir_name(dir_name):
 
 
 def aggregate_crowd():
-    files = get_all_files_in_dirs()
-    for root, dirs, files in os.walk(player_file_path):
-        for dirs in files:
-            if file.endswith(".parquet"):
-                print(os.path.join(root, file))
-    raw_df = pd.read_parquet(path=crowd_file_path + filename_template.format(
-        param['year'], param['month'], param['in_format']), engine='pyarrow')
-    aggregated_data = aggregate_by_weekday(raw_df) + aggregate_by_month(raw_df)
-    pd.DataFrame(aggregated_data).to_csv(player_file_path + 'aggregated.csv')
+    dirs = get_all_files_in_dirs(crowd_file_path)
+    aggregated_data = []
+    pd.DataFrame()
+    i = 0
+    for dir in dirs:
+        player_id = get_player_id_by_dir_name(dir['dir'])
+        print('started ', player_id)
+        for file in dir['files']:
 
-print(get_all_files_in_dirs(crowd_file_path))
-# aggregate_crowd()
+            raw_df = pd.read_parquet(path=os.path.join(crowd_file_path, dir['dir'], file), engine='pyarrow')
+            # portions_num = math.ceil(raw_df.Mac.count() / portion_size)
+            # for portion in range(1, portions_num):
+            i = aggregate_by_weekday(raw_df=raw_df, player=player_id, i=i)
+            raw_df = raw_df.iloc[0:0]
+
+# print(get_all_files_in_dirs(crowd_file_path))
+aggregate_crowd()
 print('ready_crowd')
