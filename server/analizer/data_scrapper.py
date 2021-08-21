@@ -77,6 +77,15 @@ def get_all_files_in_dirs(path):
     return file_list
 
 
+def get_players():
+    file_list = []
+    for root, dirs, files in os.walk(path):
+        for dir in dirs:
+            for root, dirs, files in os.walk(os.path.join(path, dir)):
+                file_list.append({'dir': dir, 'files': files})
+    return file_list
+
+
 def get_player_id_by_dir_name(dir_name):
     return int(dir_name.split('=', 1)[1].lstrip())
 
