@@ -122,7 +122,7 @@ const AdressPicker = ({ onSelectAdress }) => {
             $(document).off('DOMSubtreeModified', waiter)
             const map = new mapboxgl.Map({
                 container: id, // container ID
-                style: '/ui/static/js/style.json', // style URL
+                style: '/static/js/style.json', // style URL
                 // style: 'mapbox://styles/mapbox/streets-v11', // style URL
                 center: [55.030204, 82.920430].reverse(), // starting position [lng, lat]
                 zoom: 9.6, // starting zoom,
