@@ -1,0 +1,120 @@
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+body .map {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
+body .map .player {
+  display: block;
+  background: whitesmoke;
+  width: 20px;
+  aspect-ratio: 4/3;
+  border: 1px solid;
+  -webkit-box-shadow: 0 0 4px #00000094;
+          box-shadow: 0 0 4px #00000094;
+  cursor: pointer;
+}
+
+body .map .player:hover {
+  background: aliceblue;
+}
+
+body .map .player.selected {
+  background: green;
+}
+
+body .form {
+  width: 450px;
+  margin: auto;
+  padding: 16px;
+  -webkit-box-shadow: 0 0 6px black;
+          box-shadow: 0 0 6px black;
+}
+
+body .form > .footer {
+  padding: 16px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: reverse;
+      -ms-flex-direction: row-reverse;
+          flex-direction: row-reverse;
+}
+
+body .form > .footer button {
+  margin-left: 16px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: gray;
+  color: white;
+  cursor: pointer;
+}
+
+body .form > .footer button.accent {
+  background: green;
+}
+
+body .form > .footer button:hover {
+  opacity: 0.9;
+}
+
+body .form > .footer button:active {
+  -webkit-box-shadow: 0 0 2px black;
+          box-shadow: 0 0 2px black;
+}
+
+body .form .slider {
+  margin: 0 16px;
+}
+
+body .form .schedule-picker {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  max-width: 100%;
+  margin: 0 8px;
+  overflow-y: auto;
+}
+
+body .form .schedule-picker div {
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+body .form .schedule-picker div:hover {
+  background: aliceblue;
+}
+
+body .form .schedule-picker div.selected {
+  background: green;
+  color: white;
+}
+
+body .form .schedule-picker div.selected + .selected {
+  margin-left: -4px;
+  padding-left: 12px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+body .form .map-frame {
+  width: 100%;
+  aspect-ratio: 4/3;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+/*# sourceMappingURL=index.css.map */
