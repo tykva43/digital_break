@@ -1,6 +1,5 @@
 import calendar
 import datetime
-import math
 import os
 
 import pandas as pd
@@ -11,9 +10,7 @@ path_to_save = '../../raw/aggregate.csv'
 crowd_file_path = '../../raw/crowd/'
 filename_template = 'month={}-{}.{}'
 player_filename_template = 'month={}-{}_player.{}'
-param = {'month': '11', 'year': '2020', 'in_format': 'parquet', 'out_format': 'csv'}
 ENGINE = 'fastparquet'
-# filename = filename_template.format('2020', '11', 'parquet')
 pd.set_option('display.max_columns', None)
 
 
@@ -96,18 +93,14 @@ def get_player_id_by_dir_name(dir_name):
 
 def aggregate_crowd():
     dirs = get_all_files_in_dirs(crowd_file_path)
-    aggregated_data = []
     pd.DataFrame()
     i = 0
     for dir in dirs:
         player_id = get_player_id_by_dir_name(dir['dir'])
         print('started ', player_id)
         for file in dir['files']:
-            # portions_num = math.ceil(raw_df.Mac.count() / portion_size)
-            # for portion in range(1, portions_num):
             i = aggregate_by_weekday(path=os.path.join(crowd_file_path, dir['dir'], file), player=player_id, i=i,
                                      chunk_size=50000)
-            # raw_df = raw_df.iloc[0:0]
 
 
 # print(get_all_files_in_dirs(crowd_file_path))
