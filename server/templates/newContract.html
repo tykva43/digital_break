@@ -2,10 +2,11 @@
 
 <head>
     {% load static %}
+    {% load sass_tags %}
 
     <link href="{% static "css/mapbox-gl.css" %}" rel="stylesheet">
     <link href="{% static "css/jquery-ui.min.css" %}" rel="stylesheet" >
-    <link href="{% static  "css/index.css" %}" rel="stylesheet"  type="text/css">
+    <link href="{% sass_src   "css/index.scss" %}" rel="stylesheet"  type="text/css">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="{% static "js/jquery-ui.min.js" %}"></script>
