@@ -116,6 +116,9 @@ ENV/
 env.bak/
 venv.bak/
 
+
+.idea
+
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -139,3 +142,9 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+/.idea/misc.xml
+/.idea/.gitignore
+/.idea/digital_break.iml
+/.idea/modules.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/vcs.xml

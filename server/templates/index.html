@@ -1,0 +1,33 @@
+<html>
+
+<head>
+    <!-- {% load static %} -->
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <script src="static/js/mapbox-gl.js"></script>
+    <script src="static/js/map.js"></script>
+    <script src="static/js/players.js"></script>
+    <script src="static/js/turf.min.js"></script>
+    <script src="static/js/jquery-ui.min.js"></script>
+    <script src="static/js/components.js"></script>
+    <script src="../static/js/control_panel/index.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <script src="../static/js/control_panel/company-list.js"></script>
+    <link href="static/css/mapbox-gl.css" rel="stylesheet" type="text/css">
+    <link href="static/css/index.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <div id="control-panel"></div>
+    <script>
+        ControlPanel({
+            view: $('#control-panel')
+        })
+    </script>
+    <!-- <p>test</p> -->
+</body>
+
+</html>

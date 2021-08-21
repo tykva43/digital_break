@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +56,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "../ui/templates"),],
+        'DIRS': [os.path.join(BASE_DIR, "templates"),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,7 +121,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static_root/')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "../ui/static"),
+    os.path.join(BASE_DIR, "static"),
 ]
 
 # Default primary key field type
@@ -128,31 +129,4 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-USE_BUNDLES = True
-
-BUNDLES = (
-    ('bundle_css', {
-        'type': 'css',
-        'files': (
-            'css/*.css',
-            'css/more/test3.css',
-            'less/test.less',
-        ),
-    }),
-    ('bundle_js', {
-        'type': 'js',
-        'files': (
-            '../../ui/static/js/*.js',
-        )
-    }),
-    ('script_loader_example', {
-        'type': 'js',
-        'files': (
-            'script_loader_example.js',
-        ),
-        'processors': (
-            'django_bundles.processors.django_template.DjangoTemplateProcessor',
-        )
-    }),
-)
+WEBPACK_LIVE_SERVER = True

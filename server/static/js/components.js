@@ -25,8 +25,56 @@ const SchedulePicker = ({ onValueChange, target }) => {
     return w
 }
 
-const NewContractForm = (view) => {
+const Modal = ({content, options, closable, onBackClick}) => {
+    const component = {}
+    const overlay = $('<div>').addClass('overlay')
+    $('body').append(overlay)
+    const overlayState = {
+        overlayVisible: true,
+        scrollPosition: 0
+    }
+    const wrapper = $('<div>').addClass('modal-wrapper')
+    const header = $('<div>').addClass('header')
+        .append($('<p>').text('<').click(onBackClick))
+    const footer = $('<div>').addClass('footer')
+    $('body').append(wrapper)
+    $('body').animate({scrollTop: $('body').height() - 100}, 100)
+    wrapper.append(header)
+    wrapper.append(content)
+    wrapper.append(footer)
 
+    overlay.click(function(){
+        if (overlayState.overlayVisible){
+            $(this).fadeOut(100)
+            overlayState.scrollPosition = $('body').scrollTop()
+            $('body').animate({scrollTop: 0}, 100, 'swing', setTimeout(_=>$(document).bind('scroll', show), 150))
+        }
+        overlayState.overlayVisible = false
+    })
+    let show = function(){
+        $(document).unbind('scroll', show)
+        if (!overlayState.overlayVisible){
+            overlay.fadeIn(100)
+            $('body').animate({scrollTop: overlayState.scrollPosition}, 100)
+            overlayState.overlayVisible = true
+        }
+
+    }
+    wrapper.on('click', show)
+    component.setBack = (callback) => {
+        header.children('p').off('click').on('click', callback)
+    }
+    component.setTitle = title => {
+        header.children('h4').text(title)
+    }
+    component.setOptions = options => {
+
+    }
+    return component
+}
+
+const NewContractForm = ({}) => {
+    const view = $('<div>').addClass('form')
     const formState = {}
 
     const adressPicker = AdressPicker({
@@ -59,6 +107,17 @@ const NewContractForm = (view) => {
         },
         target: new Array(24).fill('').map((_, index) => index)
     })
+    const dateRangePicker = $('<input>').daterangepicker({
+        minDate: new Date(),
+        locale: {
+            format: 'DD.MM.YYYY'
+        }
+    }, function(start, end){
+        formState['schedule'] = {
+            ...formState['schedule'],
+            dateRange: [start, end]
+        }
+    });
 
     view.append($('<h4>Адресная программа</h4>'))
     view.append($('<div class="map-frame">')
@@ -68,6 +127,7 @@ const NewContractForm = (view) => {
     view.append(countPicker)
 
     view.append($('<h4>Период</h4>'))
+    view.append(dateRangePicker)
     view.append($('<h4>Дни недели</h4>'))
     view.append(weekPicker)
     view.append($('<h4>Часовой интервал</h4>'))
@@ -75,9 +135,11 @@ const NewContractForm = (view) => {
     view.append(freqPicker)
 
     view.append($('<div>').addClass('footer')
-        .append($('<button>').text('Сохранить').addClass('accent'))
-        .append($('<button>').text('Отменить'))
+        .append($('<button>').text('принять').addClass('accent'))
+        .append($('<button>').text('отменить'))
     )
+
+    return view
 
 }
 
@@ -122,7 +184,7 @@ const AdressPicker = ({ onSelectAdress }) => {
             $(document).off('DOMSubtreeModified', waiter)
             const map = new mapboxgl.Map({
                 container: id, // container ID
-                style: '/ui/static/js/style.json', // style URL
+                style: '/static/js/style.json', // style URL
                 // style: 'mapbox://styles/mapbox/streets-v11', // style URL
                 center: [55.030204, 82.920430].reverse(), // starting position [lng, lat]
                 zoom: 9.6, // starting zoom,
