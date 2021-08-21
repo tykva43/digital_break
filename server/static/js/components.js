@@ -132,6 +132,7 @@ const Modal = ({}) => {
 
     }
     wrapper.on('click', show)
+    wrapper.open = show
     return wrapper
 }
 
@@ -273,29 +274,32 @@ const AdressPicker = ({ onSelectAdress }) => {
                 pitch: 60
             });
             console.log(map)
-            players.forEach(player => {
-                let el = $('<div>').addClass('player')
+            map.on('load', _ => {
+                 players.forEach(player => {
+                    let el = $('<div>').addClass('player')
 
-                el.on('click', function() {
+                    el.on('click', function() {
 
-                    if ($(this).hasClass('selected')) {
-                        adresses[player.PlayerId] = false
-                    } else {
-                        adresses[player.PlayerId] = true
-                    }
-                    onSelectAdress(
-                        Object.keys(adresses).filter(
-                            x => adresses[x] == true
+                        if ($(this).hasClass('selected')) {
+                            adresses[player.PlayerId] = false
+                        } else {
+                            adresses[player.PlayerId] = true
+                        }
+                        onSelectAdress(
+                            Object.keys(adresses).filter(
+                                x => adresses[x] == true
+                            )
                         )
-                    )
-                    $(this).toggleClass('selected')
+                        $(this).toggleClass('selected')
 
+                    })
+
+                    let marker = new mapboxgl.Marker(el.get(0))
+                        .setLngLat([player.GeoLon, player.GeoLat])
+                        .addTo(map)
                 })
-
-                let marker = new mapboxgl.Marker(el.get(0))
-                    .setLngLat([player.GeoLon, player.GeoLat])
-                    .addTo(map)
             })
+
         }
 
     }
