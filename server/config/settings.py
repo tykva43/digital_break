@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-g%5p41y=a0r$!-wrkclgkz9cqkb$yxni)j6znrr1b4-3bi*$$@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -113,7 +113,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
@@ -123,3 +122,32 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+USE_BUNDLES = True
+
+BUNDLES = (
+    ('bundle_css', {
+        'type': 'css',
+        'files': (
+            'css/*.css',
+            'css/more/test3.css',
+            'less/test.less',
+        ),
+    }),
+    ('bundle_js', {
+        'type': 'js',
+        'files': (
+            'js/*.js',
+        )
+    }),
+    ('script_loader_example', {
+        'type': 'js',
+        'files': (
+            'script_loader_example.js',
+        ),
+        'processors': (
+            'django_bundles.processors.django_template.DjangoTemplateProcessor',
+        )
+    }),
+)
