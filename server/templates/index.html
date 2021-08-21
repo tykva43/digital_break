@@ -7,11 +7,12 @@
         <script src="{% static "js/mapbox-gl.js" %}"></script>
         <script src="{% static "js/map.js" %}"></script>
         <script src="{% static "js/players.js" %}"></script>
-
+        <script src="../static/js/control_panel/index.js"></script>
         <link href="{% static "css/mapbox-gl.css" %}" rel="stylesheet" type="text/css" >
         <link href="{% static "css/index.css" %}" rel="stylesheet" type="text/css">
     </head>
     <body>
+        <div id="control-panel"></div>
         <script>
             ControlPanel({view: $('#control-panel')})
         </script>
