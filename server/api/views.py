@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from .serializers import ContractSerializer, CampanySeriaizer
 from .models import Campany
 
-from analizer import new_plan
+# from analizer import new_plan
 
 
 def index(request):
@@ -26,7 +26,7 @@ class NewContractView(APIView):
         serializer = ContractSerializer(data=contract)
         if serializer.is_valid(raise_exception=True):
             contract_saved = serializer.save()
-        new_plan(serializer.data)
+        # new_plan(serializer.data)
         return Response({"data": 'saved'})
 
 
@@ -45,4 +45,4 @@ class CampanyView(APIView):
 def get_csv(request):
     buffer = io.BytesIO()
     buffer.seek(0)
-    return FileResponse(buffer, as_attachment=True, filename='server/raw/1.csv')
+    return FileResponse(buffer, as_attachsment=True, filename='server/raw/1.csv')
