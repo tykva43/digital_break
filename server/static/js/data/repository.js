@@ -34,7 +34,7 @@ const MakeRepositoty = _ => {
             time_period_start,
             time_period_end
         }) =>
-        POST({url: '', data: {addresses,
+        POST({url: 'new_contract/', data: {addresses,
             OTS,
             company_start,
             company_end,
@@ -45,7 +45,7 @@ const MakeRepositoty = _ => {
 
     r.get_company_list
     =   (_ = {}) =>
-    POST({url: 'get_campany', data: {}, returns: resp => resp.list})
+    POST({url: 'get_campany/', data: {}, returns: resp => resp.list})
 
     return r
 

@@ -24,7 +24,7 @@ class NewContractView(APIView):
 
 
 class CampanyView(APIView):
-    def get(self, request):
+    def post(self, request):
         players = Campany.objects.all()
         serializer = CampanySeriaizer(data=players, many=True)
         serializer.is_valid()
