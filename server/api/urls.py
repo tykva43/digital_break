@@ -4,5 +4,5 @@ from api import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('new_contract/', views.new_contract, name='new_contract'),
+    path('new_contract/', views.NewContractView.as_view(), name='new_contract'),
 ]
