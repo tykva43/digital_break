@@ -1,7 +1,7 @@
 import pandas as pd
 import datetime
 
-from data_scrapper import filter_df_in
+from .data_scrapper import filter_df_in
 
 PROGNOZ_PATH = '../../raw/aggregated_by_month.csv.csv'
 # PROGNOZ_PATH = '../../raw/aggregated_by_daytime.csv'

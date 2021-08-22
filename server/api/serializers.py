@@ -7,6 +7,7 @@ class CampanySeriaizer(serializers.ModelSerializer):
         model = Campany
         fields = '__all__'
 
+
 class ContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = NewContractModel
