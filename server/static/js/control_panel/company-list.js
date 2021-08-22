@@ -3,7 +3,8 @@ $(NAVGRAPH).on("hide", (e, view) => {
 })
 $(NAVGRAPH).on("preview", (e, view, {company: name} = {}) => {
     if (view.id == 'Company'){
-        company = name
+        if (name)
+            company = name
     }
 })
 $(NAVGRAPH).on("show", (e, view) => {
@@ -29,6 +30,7 @@ $(NAVGRAPH).on("show", (e, view) => {
 
             return add
         }))
+        view.content.append($('<a href="#">').text('Скачать полный план'))
     }
     if (view.id == 'Company'){
         view.content.children().remove()

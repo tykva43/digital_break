@@ -8,6 +8,9 @@ $(document).ready(_=>{
             content.append(NewContractForm({onValueChange: val => {
                 formValue = val
             }}))
+            $(NAVGRAPH).off('decline').on('decline', _=>{
+                NAVGRAPH.back()
+            })
             $(NAVGRAPH).off('accept').on('accept', _ => {
 
                 NAVGRAPH.wait()

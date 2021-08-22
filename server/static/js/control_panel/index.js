@@ -2,6 +2,9 @@
 $(document).ready(_=>{
     const view = Modal({})
     NAVGRAPH.initMenu(view)
+    $(NAVGRAPH).on('preview', _=>{
+        view.open()
+    })
     return view
 })
 
@@ -9,7 +12,7 @@ const ControlPanel = ({view}) => {
 
 
 
-    const CheckPosition = ({bounds, center}) => {
+    const CheckPosition = ({bounds, center, map}) => {
         if (map.getZoom() < 6)
             return false
         let poly = turf.bboxPolygon([
@@ -30,8 +33,9 @@ const ControlPanel = ({view}) => {
     view.append(mapContainer)
 
     const flyToNsk = $('<div>').addClass('fly-to-nsk')
+        .append($('<i class="fa fa-map-marker" aria-hidden="true"></i>'))
         .click(function(){
-            map.flyTo({
+            globalMap.flyTo({
                 center: [55.030204, 82.920430].reverse(), // starting position [lng, lat]
                 zoom: 9.6,
                 pitch: 60
@@ -40,7 +44,7 @@ const ControlPanel = ({view}) => {
         .hide()
     mapContainer.append(flyToNsk)
 
-    const map = new mapboxgl.Map({
+    globalMap = new mapboxgl.Map({
         container: mapId, // container ID
         style: 'static/js/style.json', // style URL
         // style: 'mapbox://styles/mapbox/streets-v11', // style URL
@@ -49,10 +53,38 @@ const ControlPanel = ({view}) => {
         pitch: 60
     });
 
-    map.on('move', function(){
+    globalMap.on('load', _ => {
+        players.forEach(player => {
+            let el = $('<div>').addClass('big-player')
+
+            el.on('click', function() {
+                $(this).siblings().each(function(){
+                    if ($(this).hasClass('selected'))
+                        $(this).toggleClass('selected')
+                })
+//                $(this).addClass('selected')
+
+                NAVGRAPH.doTransition({
+                    from: NAVGRAPH.current.id == 'Player'
+                        ? null
+                        : NAVGRAPH.current.id,
+                    to: 'Player',
+                    transition: TRANSITION.SLIDERIGHT
+                }, {player})
+            })
+            el.get(0).player = player
+
+            let marker = new mapboxgl.Marker(el.get(0))
+                .setLngLat([player.GeoLon, player.GeoLat])
+                .addTo(globalMap)
+        })
+    })
+
+    globalMap.on('move', function(){
         let visibleFlag = CheckPosition({
-            bounds: map.getBounds(),
-            center: [55.030204, 82.920430].reverse()
+            bounds: globalMap.getBounds(),
+            center: [55.030204, 82.920430].reverse(),
+            map: globalMap
         })
         if (!visibleFlag && flyToNsk.get(0).style.display == 'none')
             flyToNsk.fadeIn(200)
@@ -60,6 +92,5 @@ const ControlPanel = ({view}) => {
             flyToNsk.fadeOut(200)
     })
 
-    console.log(map)
 
 }

@@ -176,7 +176,15 @@ class Navgraph{
                 if (w.transitions[i].id == transition){
                     transition = w.transitions[i]
                     w.backstack.unshift(transition.from)
-                }
+                } else{}
+        else{
+            if (transition.from)
+                if (!transition.native)
+                    w.backstack.unshift(transition.from)
+                else{}
+            else
+                transition.from = this.current
+        }
         if (!!transition == false){
             console.error('incorrect transition')
             return
@@ -301,8 +309,11 @@ class Navgraph{
         animator.start()
     }
     toHome(){
-        this.doTransition({from:this.current,to:NAVGRAPH.start,transition:TRANSITION.CLOSE})
+        this.doTransition({from:this.current,to:NAVGRAPH.start,transition:TRANSITION.CLOSE, native: true})
         this.backstack = []
+    }
+    back(){
+        this.host.find('.head .back').trigger('click')
     }
 
     initView(view){
@@ -358,7 +369,7 @@ class Navgraph{
             }
             $(this).click(function(){
                 w.backstack.unshift(view)
-                w.doTransition(transition)
+                w.doTransition({...transition, native: true})
             })
         })
     }
@@ -439,7 +450,8 @@ class Navgraph{
                     w.doTransition({
                         from: view,
                         to: w.backstack.shift(),
-                        transition: TRANSITION.SLIDELEFT
+                        transition: TRANSITION.SLIDELEFT,
+                        native: true
                     })
                 }
 
@@ -545,6 +557,11 @@ NAVGRAPH = new Navgraph(
                 content: '#AddContract',
                 header: HEADER.BACK,
                 footer: FOOTER.ACCEPT|FOOTER.DECLINE
+            },
+            {
+                id: "Player",
+                content: '#Player',
+                header: HEADER.BACK
             }
         ],
         transitions: [
