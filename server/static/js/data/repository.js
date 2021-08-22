@@ -43,6 +43,10 @@ const MakeRepositoty = _ => {
             time_period_end
         }, returns: resp => resp.success})
 
+    r.get_company_list
+    =   (_ = {}) =>
+    POST({url: '', data: {}, returns: resp => resp.list})
+
     return r
 
 }
