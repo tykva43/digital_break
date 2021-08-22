@@ -168,8 +168,9 @@ const NewContractForm = ({onValueChange}) => {
     const formState = {
         addresses: [],
         schedule: {
-            start: (new Date()).toISOString().slice(0, 10).replaceAll('-','/'),
-            end: (new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 10)).toISOString().slice(0, 10).replaceAll('-','/')
+            start: (new Date()).toISOString().slice(0, 10),
+            days: [],
+            end: (new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 10)).toISOString().slice(0, 10)
         }
     }
 
@@ -236,7 +237,7 @@ const NewContractForm = ({onValueChange}) => {
     }, function(start, end){
         formState['schedule'] = {
             ...formState['schedule'],
-            dateRange: {start: start._i.slice(0,3).join('-'), end: end._i.slice(0,3).join('-')}
+            start: start._i.slice(0,3).join('-'), end: end._i.slice(0,3).join('-')
         }
         onValueChange(formState)
         console.log(formState)

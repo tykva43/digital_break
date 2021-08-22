@@ -15,10 +15,14 @@ $(document).ready(_=>{
 
                 if (
                     formValue.addresses.length == 0
-                    || !formValue.time_start
-                    || !formValue.time_end
+                    || !formValue.schedule.time_start
+                    || !formValue.schedule.time_end
                     || formValue.schedule.days.length == 0
                 )   {
+                    console.log(formValue.addresses.length)
+                    console.log(formValue.schedule.time_start)
+                    console.log(formValue.schedule.time_end)
+                    console.log(formValue.schedule.days.length  )
                     alert('Заполните все поля')
                     return
                 }
