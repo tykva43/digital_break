@@ -24,6 +24,10 @@ $(document).ready(_=>{
             NAVGRAPH.setTitle(player.PlayerNumber)
             let marker = globalMap._markers.find(x => x._element.player.PlayerId == player.PlayerId)
             $(marker._element).addClass('selected')
+            content.children().remove()
+            content.append($('<button class="btn-primary">')
+                .text('Загрузить данные для банера ' + player.PlayerNumber)
+            )
         }
     })
 

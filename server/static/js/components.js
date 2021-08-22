@@ -168,6 +168,7 @@ const NewContractForm = ({onValueChange}) => {
         onSelectAdress: value => {
             formState['addresses'] = value
             onValueChange(formState)
+            console.log(formState)
         }
     })
     const countPicker = CountPicker({

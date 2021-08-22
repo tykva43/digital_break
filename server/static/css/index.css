@@ -83,8 +83,8 @@ body .map .big-player:hover,
 body .map .big-player.selected{
     width: 30px;
 }
-body .map .big-player.selected{
-    background: blue
+body .map .selected{
+    background: var(--primary) !important
 }
 
 body .overlay{
