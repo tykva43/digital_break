@@ -1,4 +1,6 @@
-from django.http import HttpResponseRedirect
+import io
+
+from django.http import HttpResponseRedirect, FileResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from rest_framework.views import APIView
@@ -39,3 +41,8 @@ class CampanyView(APIView):
         print(serializer)
         return Response({"data": serializer.data})
 
+
+def get_csv(request):
+    buffer = io.BytesIO()
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename='server/raw/1.csv')
