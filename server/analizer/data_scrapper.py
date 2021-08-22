@@ -137,6 +137,8 @@ def get_players(path):
     return file_list
 
 
+
+
 def get_player_id_by_dir_name(dir_name):
     return int(dir_name.split('=', 1)[1].lstrip())
 

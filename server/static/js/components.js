@@ -168,6 +168,7 @@ const NewContractForm = ({onValueChange}) => {
         onSelectAdress: value => {
             formState['addresses'] = value
             onValueChange(formState)
+            console.log(formState)
         }
     })
     const countPicker = CountPicker({
@@ -224,9 +225,10 @@ const NewContractForm = ({onValueChange}) => {
     }, function(start, end){
         formState['schedule'] = {
             ...formState['schedule'],
-            dateRange: [start, end]
+            dateRange: {start: start._i.slice(0,3).join('-'), end: end._i.slice(0,3).join('-')}
         }
         onValueChange(formState)
+        console.log(formState)
     });
 
     view.append($('<h4>Адресная программа</h4>'))

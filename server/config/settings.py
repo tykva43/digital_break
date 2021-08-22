@@ -91,7 +91,7 @@ DATABASES = {
         'NAME': 'hackaton',
         'USER' : 'postgres',
         'PASSWORD' : '1',
-        'HOST' : '127.0.0.1',
+        'HOST' : '192.168.0.100',
         'PORT' : '5432',
     }
 }
