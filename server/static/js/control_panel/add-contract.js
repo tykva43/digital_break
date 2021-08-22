@@ -13,6 +13,16 @@ $(document).ready(_=>{
             })
             $(NAVGRAPH).off('accept').on('accept', _ => {
 
+                if (
+                    formValue.addresses.length == 0
+                    || !formValue.time_start
+                    || !formValue.time_end
+                    || formValue.schedule.days.length == 0
+                )   {
+                    alert('Заполните все поля')
+                    return
+                }
+
                 NAVGRAPH.wait()
                 REPOSITORY.post_new_contract_form({
                     addresses: formValue.addresses,

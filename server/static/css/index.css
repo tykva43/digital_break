@@ -109,7 +109,7 @@ body .modal-wrapper{
     width: max(800px, 70%);
     border-radius: 4px;
     position: absolute;
-    overflow: hidden;
+    //overflow: hidden;
     left: 50%;
     transition: transform .3s ease-in-out;
     transform: translateX(-50%);
@@ -240,9 +240,8 @@ body .modal-wrapper > .foot {
     position: sticky;
     bottom: 0;
     margin-top: 4px;
-    background: white;
+    background: rgba(255,255,255,.5);
     z-index: 3;
-  padding: 16px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -266,6 +265,8 @@ body .modal-wrapper > .foot .bottomButtons{
     display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+    padding: 16px;
+
   -webkit-box-orient: horizontal;
   -webkit-box-direction: reverse;
       -ms-flex-direction: row-reverse;

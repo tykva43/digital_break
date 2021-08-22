@@ -26,7 +26,9 @@ $(document).ready(_=>{
             $(marker._element).addClass('selected')
             content.children().remove()
             content.append($('<button class="btn-primary">')
+                .css('margin', '16px 8px')
                 .text('Загрузить данные для банера ' + player.PlayerNumber)
+                .click(_ => window.open('/get_player_report/' + company.id))
             )
         }
     })

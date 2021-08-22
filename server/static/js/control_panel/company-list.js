@@ -8,7 +8,7 @@ $(NAVGRAPH).on("hide", (e, view) => {
 $(NAVGRAPH).on("preview", (e, view, {company: cp} = {}) => {
     if (view.id == 'Company'){
         if (cp)
-            company = name
+            company = cp
     }
 })
 $(NAVGRAPH).on("show", async (e, view) => {
@@ -21,7 +21,7 @@ $(NAVGRAPH).on("show", async (e, view) => {
         NAVGRAPH.stopWaiting()
         view.content.append($('<ul>').addClass('flat-list selectable').append(
             Array.prototype.map.call(companies, item => {
-                let li = $('<li>').text(item.id)
+                let li = $('<li>').text(item.name)
                 li.get(0).onclick = _=>{
                     NAVGRAPH.doTransition(
                         'watchCompany',
@@ -41,15 +41,22 @@ $(NAVGRAPH).on("show", async (e, view) => {
         view.content.append($('<Button class="btn-primary">')
             .text('Скачать полный план')
             .css('margin', '16px 32px')
+            .click(_ => window.open('/get_full_report/'))
         )
     }
     if (view.id == 'Company'){
+
         view.content.children().remove()
-        view.content.append($('<button class="btn-primary>').text("Загрузить данные для рекламной кампании " + company.id))
-        globalMap._markers.filter(x => company.addresses.indexOf(x._element.player.PlayerId) == -1).forEach(pl =>
-            $(pl._element).hide()
+        view.content.append(
+            $('<button class="btn-primary">')
+                .css('margin', '16px 8px')
+                .text("Загрузить данные для рекламной кампании " + company.name)
+                .click(_ => window.open('/get_camp_report/' + company.id))
         )
-        NAVGRAPH.setTitle(company.id)
+//        globalMap._markers.filter(x => company.addresses.indexOf(x._element.player.PlayerId) == -1).forEach(pl =>
+//            $(pl._element).hide()
+//        )
+        NAVGRAPH.setTitle(company.name)
     }
 })
 
