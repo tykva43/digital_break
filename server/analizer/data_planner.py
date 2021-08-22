@@ -161,7 +161,7 @@ def generate_files():
     generate_ots_plan_file()
 
 
-# generate_files()
+generate_files()
 
-print(get_hours_by_periods({'campany_start': '2021-08-21', 'campany_end': '2021-08-22', 'days_of_week': [6],
-                            'time_period_start': 12, 'time_period_end': 13}))
+# print(new_plan({'campany_start': '2021-08-21', 'campany_end': '2021-08-22', 'days_of_week': [6],
+#                             'time_period_start': 12, 'time_period_end': 13}))
