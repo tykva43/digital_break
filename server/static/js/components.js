@@ -11,10 +11,12 @@ const SchedulePicker = ({ onValueChange, target }) => {
                 selectedDays[item] = true
             }
             $(this).toggleClass('selected')
+            let res = Object.keys(selectedDays).filter(
+                x => selectedDays[x] == true
+            )
             onValueChange(
-                Object.keys(selectedDays).filter(
-                    x => selectedDays[x] == true
-                )
+                res,
+                res.map(x => target.indexOf(x))
             )
         })
         w.append(dayEl)
@@ -162,7 +164,14 @@ const Modal = ({}) => {
 
 const NewContractForm = ({onValueChange}) => {
     const view = $('<div>').addClass('form')
-    const formState = {}
+
+    const formState = {
+        addresses: [],
+        schedule: {
+            start: (new Date()).toISOString().slice(0, 10).replaceAll('-','/'),
+            end: (new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 10)).toISOString().slice(0, 10).replaceAll('-','/')
+        }
+    }
 
     const adressPicker = AdressPicker({
         onSelectAdress: value => {
@@ -181,14 +190,14 @@ const NewContractForm = ({onValueChange}) => {
     })
     const freqPicker = CountPicker({
         onValueChange: value => {
-            formState['count'] = value
+            formState['freq'] = value
             onValueChange(formState)
         },
         title: 'Частота показов в час',
         target: [6, 9, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72]
     })
     const weekPicker = SchedulePicker({
-        onValueChange: value => {
+        onValueChange: (_, value) => {
             formState['schedule'] = {
                 ...formState['schedule'],
                 days: value
@@ -221,7 +230,9 @@ const NewContractForm = ({onValueChange}) => {
         minDate: new Date(),
         locale: {
             format: 'DD.MM.YYYY'
-        }
+        },
+        startDate: new Date(formState.schedule.start),
+        endDate: new Date(formState.schedule.end)
     }, function(start, end){
         formState['schedule'] = {
             ...formState['schedule'],
@@ -244,7 +255,7 @@ const NewContractForm = ({onValueChange}) => {
     view.append(weekPicker)
     view.append($('<h4>Часовой интервал</h4>'))
     view.append(hourPicker)
-    view.append(freqPicker)
+//    view.append(freqPicker)
 
 
 
@@ -279,6 +290,7 @@ const CountPicker = ({ onValueChange, title, target }) => {
             onValueChange(target[ui.value])
         }
     })
+    onValueChange(target[0])
 
     return view
 }

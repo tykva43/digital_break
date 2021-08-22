@@ -109,6 +109,7 @@ body .modal-wrapper{
     width: max(800px, 70%);
     border-radius: 4px;
     position: absolute;
+    overflow: hidden;
     left: 50%;
     transition: transform .3s ease-in-out;
     transform: translateX(-50%);
