@@ -41,7 +41,7 @@ $(NAVGRAPH).on("show", async (e, view) => {
         view.content.append($('<Button class="btn-primary">')
             .text('Скачать полный план')
             .css('margin', '16px 32px')
-            .click(_ => window.open('/get_full_report/'))
+            .click(_ => window.open('/csv/'))
         )
     }
     if (view.id == 'Company'){
@@ -49,9 +49,9 @@ $(NAVGRAPH).on("show", async (e, view) => {
         view.content.children().remove()
         view.content.append(
             $('<button class="btn-primary">')
-                .css('margin', '16px 8px')
+                .css('margin', '16px 32px')
                 .text("Загрузить данные для рекламной кампании " + company.name)
-                .click(_ => window.open('/get_camp_report/' + company.id))
+                .click(_ => window.open('/csv/'))
         )
 //        globalMap._markers.filter(x => company.addresses.indexOf(x._element.player.PlayerId) == -1).forEach(pl =>
 //            $(pl._element).hide()
