@@ -1,3 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+*::-webkit-scrollbar {
+    transition: width .3s, height .3s;
+  width: 6px;               /* ширина scrollbar */
+  height: 6px;               /* ширина scrollbar */
+}
+*::-webkit-scrollbar:hover{
+    width: 12px;
+    height: 12px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;        /* цвет дорожки */
+}
+*::-webkit-scrollbar-thumb {
+    cursor: pointer;
+  background-color: var(--light);    /* цвет плашки */
+  border-radius: 20px;       /* закругления плашки */
+}
+*::-webkit-scrollbar-thumb:hover{
+    background-color: var(--primary)
+}
+
+input{
+    padding: 8px 16px;
+    font-size: 1em;
+    border-radius: 4px;
+    border: 1px solid;
+    outline: none;
+}
+input:focus{
+    color: var(--primary);
+    border-width: 2px
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -6,8 +41,14 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  font-family: Roboto;
+    color: #5a5a5a;
+    --primary: #7cb3e8;
+    --light: #c5def6
 }
-
+*{
+    font-family: Roboto;
+}
 body #control-panel {
   -webkit-box-flex: 1;
       -ms-flex: 1;
@@ -65,7 +106,8 @@ body .modal-wrapper.hidden:not(:hover){
 
 
 body .modal-wrapper{
-    width: 650px;
+    width: max(800px, 70%);
+    border-radius: 4px;
     position: absolute;
     left: 50%;
     transition: transform .3s ease-in-out;
@@ -74,8 +116,16 @@ body .modal-wrapper{
     min-height: 100px;
     background: white;
     box-shadow: 0 0 6px black;
-    padding: 16px;
+    //padding: 16px;
 }
+.form{
+    max-width: 450px;
+    margin: auto;
+}
+body .modal-wrapper .viewPort{
+    //padding: 32px
+}
+
 
 body .map .fly-to-nsk{
     position: absolute;
@@ -93,18 +143,18 @@ body .map .fly-to-nsk{
     box-shadow: 0 0 4px black;
 }
 body .map .fly-to-nsk:hover{
-    background: aliceblue
+    background: var(--light)
 }
 body .map .fly-to-nsk:active{
     box-shadow: 0 0 6px black
 }
 
 body .map .player:hover {
-  background: aliceblue;
+  background: var(--light);
 }
 
 body .map .player.selected {
-  background: green;
+  background: var(primary);
 }
 
 body .modal-wrapper .head{
@@ -113,15 +163,18 @@ body .modal-wrapper .head{
     //padding: 16px;
     background: white;
     display: flex;
-    z-index: 2
+    z-index: 4;
+    box-shadow: 0 0 4px black;
+    border-radius: 4px 4px 0 0;
+    overflow: hidden
 }
 
-body .modal-wrapper .head .back i{
+body .modal-wrapper .head > *{
     display: flex;
     justify-content: center;
     cursor: pointer;
     align-items: center;
-    padding: 0 4px
+
 }
 body .modal-wrapper .lock{
     display: none;
@@ -129,18 +182,25 @@ body .modal-wrapper .lock{
     width: 100%;
     background: #ffffffa6;
     height: 100%;
-    z-index: 3;
+    z-index: 5;
     left: 0;
     top: 0;
 }
 
-body .modal-wrapper .head .back i:hover{
-    background: aliceblue
+body .modal-wrapper .head .back{
+    padding: 0 32px;
+}
+body .modal-wrapper .head .back:hover{
+    background: var(--light)
+}
+body .modal-wrapper .head .back p{
+    margin-left: 6px
 }
 
-body .modal-wrapper .head p{
-    margin: 16px 10px;
-    font-size: 18px;
+body .modal-wrapper .head .title > p{
+    margin: 14px 32px;
+    font-size: 1.2rem;
+    font-weight: 500
 }
 
 .flat-list{
@@ -150,7 +210,7 @@ body .modal-wrapper .head p{
 }
 .flat-list li{
     margin: 0;
-    padding: 16px;
+    padding: 16px 32px;
     display: flex;
     position: relative
 }
@@ -158,19 +218,29 @@ body .modal-wrapper .head p{
     cursor: pointer
 }
 .flat-list.selectable li:hover{
-    background: aliceblue
+    background: var(--light)
 }
 .flat-list.selectable li:active{
     box-shadow: 0 0 2px black
 }
 
+.daterangepicker td.active, .daterangepicker td.active:hover{
+    background-color: var(--primary)
+}
+.daterangepicker td.in-range{
+    background-color: var(--light)
+}
+
+.btn-primary{
+    background-color: var(--primary)
+}
 
 body .modal-wrapper > .foot {
     position: sticky;
     bottom: 0;
     margin-top: 4px;
     background: white;
-    z-index: 2;
+    z-index: 3;
   padding: 16px;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -181,12 +251,12 @@ body .modal-wrapper > .foot {
           flex-direction: row-reverse;
 }
 
-body .modal-wrapper > .foot button {
+button {
   margin-left: 16px;
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
-  background: gray;
+  background: var(--light);
   color: white;
   cursor: pointer;
 }
@@ -202,28 +272,60 @@ body .modal-wrapper > .foot .bottomButtons{
 }
 
 body .modal-wrapper > .foot button.accept {
-  background: green;
+  background: var(--primary);
 }
 
-body .modal-wrapper > .foot button:hover {
-  opacity: 0.9;
+button:hover {
+  //opacity: 0.9;
+  filter: saturate(2)
 }
 
-body .form > .foot button:active {
+button:active {
   -webkit-box-shadow: 0 0 2px black;
           box-shadow: 0 0 2px black;
 }
 
 body .form .slider {
-  margin: 0 16px;
+  margin: 0 8px;
 }
 
+.slider .ui-slider-range-min,
+.slider .ui-slider-handle {
+    background: var(--light) !important
+
+}
+.slider .ui-slider-handle {
+    box-shadow: 0 0 4px #0000003d;
+}
+.slider .ui-slider-handle:hover{
+    cursor: pointer;
+    background: var(--primary) !important
+}
+
+body .form .schedule-picker .scrollHandler .right{
+    right: 0;
+}
+body .form .schedule-picker .scrollHandler .left{
+    left: 0;
+}
+body .form .schedule-picker .scrollHandler{
+    position: absolute;
+    width: 100%;
+    height: 100%
+}
+body .form .schedule-picker .scrollHandler * {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    background: rgba(0,0,0,.5);
+    cursor: pointer
+}
 body .form .schedule-picker {
+    position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   max-width: 100%;
-  margin: 0 8px;
   overflow-y: auto;
 }
 
@@ -235,11 +337,11 @@ body .form .schedule-picker div {
 
 body .form .schedule-picker div:hover,
 body .form .schedule-picker div.hover{
-  background: aliceblue;
+  background: var(--light);
 }
 
 body .form .schedule-picker div.selected {
-  background: green;
+  background: var(--primary);
   color: white;
 }
 
