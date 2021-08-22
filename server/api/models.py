@@ -4,8 +4,8 @@ from django.contrib.postgres.fields import ArrayField
 class NewContractModel(models.Model):
     addresses = ArrayField(models.IntegerField())
     OTS = models.PositiveIntegerField()
-    campany_start = models.DateTimeField()
-    campany_end = models.DateTimeField()
+    campany_start = models.DateField()
+    campany_end = models.DateField()
     days_of_week = ArrayField(models.PositiveIntegerField())
     time_period_start = models.PositiveIntegerField()
     time_period_end = models.PositiveIntegerField()

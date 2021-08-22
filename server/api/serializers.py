@@ -1,4 +1,5 @@
-from .models import NewContractModel, Campany
+from .models import NewContractModel
+from .models import Campany
 from rest_framework import serializers
 
 
