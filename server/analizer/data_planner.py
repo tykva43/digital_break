@@ -3,7 +3,8 @@ import datetime
 
 from data_scrapper import filter_df_in
 
-PROGNOZ_PATH = '../../raw/aggregated_by_daytime.csv'
+PROGNOZ_PATH = '../../raw/aggregated_by_month.csv.csv'
+# PROGNOZ_PATH = '../../raw/aggregated_by_daytime.csv'
 CONTRACTS_PATH = '../../raw/contracts.csv'
 PLAN_OTS_PATH = '../../raw/plan_ots.csv'
 
@@ -29,16 +30,19 @@ def get_hours_by_periods(data):
 
 def get_boards_timetable_data(boards, dates, hours):
     timetable = pd.read_csv(TIMETABLE_PATH)
-    filtered_timetable = filter_df_in(df=timetable, filter_field='player_id', filter_list=boards)
-    filtered_timetable = filter_df_in(df=filtered_timetable, filter_field='date', filter_list=dates)
-    return filter_df_in(df=filtered_timetable, filter_field='hour', filter_list=hours)
+
+    filter1 = timetable['player_id'].isin(boards)
+    filter3 = timetable['date'].isin(dates)
+    filter2 = timetable['hour'].isin(hours)
+    return timetable.copy()[filter1 & filter2 & filter3]
 
 
 def check_free_spaces(df):
     free = 0
-    for row in df.itterrows():
+    for index, row in df.iterrows():
         if row['busy'] < 72:
             free += 1
+    print(free)
     return free
 
 
@@ -117,14 +121,12 @@ def set_plan(id, freq, ots, dates, hours, boards):
     df.to_csv(PLAN_FREQ_PATH)
 
 
-
-
 def new_plan(data):
     boards = data['addresses']
     dates, hours = get_hours_by_periods(data)
     # Filter timetable by boards, date, time
     timetable = get_boards_timetable_data(boards, dates, hours)
-    if not check_free_spaces(df=timetable):
+    if not check_free_spaces(df=timetable.copy()):
         return {'error_message': 'All selected hours are already taken by other advertising campaigns'}
     ots_sum = count_OTS(dates, hours, boards)
     if ots_sum < data['ots']:
@@ -150,7 +152,7 @@ def generate_timetable(month=True):
         'date': now_date + datetime.timedelta(days=day),
         'hour': hour,
         'busy': 0
-    } for day in range(days+1) for _, board in boards.iterrows() for hour in range(24)]
+    } for day in range(days+1) for index, board in boards.iterrows() for hour in range(24)]
     pd.DataFrame(timetable).to_csv(TIMETABLE_PATH)
     return 0
 
@@ -161,7 +163,7 @@ def generate_files():
     generate_ots_plan_file()
 
 
-generate_files()
+# generate_files()
 
-# print(new_plan({'campany_start': '2021-08-21', 'campany_end': '2021-08-22', 'days_of_week': [6],
-#                             'time_period_start': 12, 'time_period_end': 13}))
+# print(new_plan({'campany_start': '2021-08-24', 'campany_end': '2021-08-26', 'days_of_week': [1,2,3],
+#                             'time_period_start': 12, 'time_period_end': 13, 'addresses': [40, 260]}))
