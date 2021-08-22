@@ -12,6 +12,10 @@ class NewContractModel(models.Model):
     time_period_start = models.PositiveIntegerField()
     time_period_end = models.PositiveIntegerField()
 
+class Campany(models.Model):
+    camp_id = models.PositiveIntegerField()
+    freq = models.PositiveIntegerField()
+
     # def __str__(self):
     #     return str(self.ots)
 
