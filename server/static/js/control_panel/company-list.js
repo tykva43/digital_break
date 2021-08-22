@@ -17,6 +17,7 @@ $(NAVGRAPH).on("show", async (e, view) => {
         view.content.children().remove()
         NAVGRAPH.wait()
         const companies = await REPOSITORY.get_company_list()
+        console.log('c', companies)
         NAVGRAPH.stopWaiting()
         view.content.append($('<ul>').addClass('flat-list selectable').append(
             Array.prototype.map.call(companies, item => {
