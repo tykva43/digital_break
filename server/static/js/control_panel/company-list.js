@@ -30,7 +30,10 @@ $(NAVGRAPH).on("show", (e, view) => {
 
             return add
         }))
-        view.content.append($('<a href="#">').text('Скачать полный план'))
+        view.content.append($('<Button>')
+            .text('Скачать полный план')
+            .css('margin', '16px 32px')
+        )
     }
     if (view.id == 'Company'){
         view.content.children().remove()

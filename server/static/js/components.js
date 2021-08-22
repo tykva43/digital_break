@@ -28,6 +28,26 @@ const TimeRangePicker = ({ onValueChange }) => {
     let w = $('<div>').addClass('schedule-picker')
     var start, end
     var selectStarted = false
+    const rightHandler = $('<div>').addClass('right')
+    const leftHandler = $('<div>').addClass('left')
+//    w.append($('<span class="scrollHandler">')
+//        .append(leftHandler.hide())
+//        .append(rightHandler)
+//    )
+
+    w.on('scroll', function(e){
+        console.log(e.target.scrollLeft)
+        if (e.target.scrollLeft == 0){
+            leftHandler.hide()
+        }
+        else
+            leftHandler.show()
+        if (e.target.scrollLeft >= e.target.scrollWidth - e.target.clientWidth - 2)
+            rightHandler.hide()
+        else
+            rightHandler.show()
+    })
+
     const target = new Array(24).fill('').map((_, i) => i)
     target.forEach(item => {
         let dayEl = $('<div>').text(item)
@@ -120,9 +140,13 @@ const Modal = ({}) => {
         overlayState.overlayVisible = false
         wrapper.addClass('hidden')
     })
-    let show = function(){
+    let show = function(customH){
         $(document).unbind('scroll', show)
+//        console.log(customH||overlayState.scrollPosition)
+        if (parseInt(customH))
+                $('body').animate({scrollTop: customH}, 100)
         if (!overlayState.overlayVisible){
+
             overlay.fadeIn(100)
             $('body').animate({scrollTop: overlayState.scrollPosition}, 100)
             overlayState.overlayVisible = true
@@ -132,7 +156,7 @@ const Modal = ({}) => {
 
     }
     wrapper.on('click', show)
-    wrapper.open = show
+    wrapper.open = _=>show($('body').height() - 150)
     return wrapper
 }
 

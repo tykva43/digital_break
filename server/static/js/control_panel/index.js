@@ -2,7 +2,7 @@
 $(document).ready(_=>{
     const view = Modal({})
     NAVGRAPH.initMenu(view)
-    $(NAVGRAPH).on('preview', _=>{
+    $(NAVGRAPH).on('show', _=>{
         view.open()
     })
     return view

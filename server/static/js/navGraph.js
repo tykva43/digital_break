@@ -444,7 +444,7 @@ class Navgraph{
     //        foot.children('.bottomButtons').slideUp(200)
     //        foot.children().slideDown(200)
             if (header&HEADER.BACK){
-                let back = $('<label>').html('<i class="fa fa-chevron-left" aria-hidden="true"> <p>' + (w.backstack.length == 1 ? "Домой" : "Назад") + '</p></i>').addClass('back').css('display', 'none')
+                let back = $('<label>').html('<i class="fa fa-chevron-left" aria-hidden="true"></i> <p>Назад</p>').addClass('back').css('display', 'none')
                 let b = function(){
                     back.off('click', b)
                     w.doTransition({
