@@ -1,4 +1,5 @@
-from .models import NewContractModel, Campany
+from .models import NewContractModel
+from .models import Campany
 from rest_framework import serializers
 
 
@@ -6,6 +7,7 @@ class CampanySeriaizer(serializers.ModelSerializer):
     class Meta:
         model = Campany
         fields = '__all__'
+
 
 class ContractSerializer(serializers.ModelSerializer):
     class Meta:

@@ -7,8 +7,12 @@ from rest_framework.response import Response
 from .serializers import ContractSerializer, CampanySeriaizer
 from .models import Campany
 
+from analizer import new_plan
+
+
 def index(request):
     return render(request, 'index.html')
+
 
 class NewContractView(APIView):
     def get(self, request):
@@ -20,10 +24,14 @@ class NewContractView(APIView):
         serializer = ContractSerializer(data=contract)
         if serializer.is_valid(raise_exception=True):
             contract_saved = serializer.save()
+        new_plan(serializer.data)
         return Response({"data": 'saved'})
 
 
 class CampanyView(APIView):
+    def get(self, request):
+        ...
+
     def post(self, request):
         players = Campany.objects.all()
         serializer = CampanySeriaizer(data=players, many=True)

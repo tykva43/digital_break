@@ -158,5 +158,5 @@ def aggregate_crowd():
 
 
 # print(get_all_files_in_dirs(crowd_file_path))
-aggregate_crowd()
+# aggregate_crowd()
 # print('ready_crowd')
