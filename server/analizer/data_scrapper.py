@@ -6,8 +6,10 @@ import pandas as pd
 
 player_file_path = '../../raw/player_log/'
 dir_template = 'player={}'
-path_to_save = '../../raw/aggregated_by_daytime.csv'
-crowd_file_path = '../../raw/crowd/'
+# path_to_save = '../../raw/aggregated_by_daytime.csv'
+path_to_save = '../../raw/aggregated_by_month.csv'
+
+crowd_file_path = 'D:\\Elijah\\HackData\\RowData\\crowd'
 filename_template = 'month={}-{}.{}'
 player_filename_template = 'month={}-{}_player.{}'
 ENGINE = 'fastparquet'
@@ -15,14 +17,23 @@ pd.set_option('display.max_columns', None)
 PERIODS = {'morning': range(5, 11), 'day': range(11, 17), 'evening': range(17, 23), 'night': range(23, 5)}
 
 
-def aggregate_by_month(raw_df, player):
+def aggregate_by_month(path, player, i):
+    raw_df = pd.read_parquet(path, engine=ENGINE)
     date = raw_df['AddedOnDate'].iloc[0].to_pydatetime().date()
-    return [{'type': 'by_month',
-             'param': None,
-             'additional': None,
-             'month': date.month,
-             'year': date.year,
-             'total': raw_df.Mac.count() / len(raw_df.AddedOnDate.unique())}]
+    df = filter_by_timestamp(raw_df)
+    df = raw_df
+    if i > 0:
+        pd.DataFrame([{'player': player,
+          'month': date.month,
+          'year': date.year,
+          'total': df.Mac.count() / len(df.AddedOnDate.unique())}]).to_csv(path_to_save, mode='a', header=False)
+    else:
+        pd.DataFrame([{'player': player,
+          'month': date.month,
+          'year': date.year,
+          'total': df.Mac.count() / len(df.AddedOnDate.unique())}]).to_csv(path_to_save, header=True)
+        i = i+1
+    return i
 
 
 def get_all_weekdays_dates(month, year, weekday):
@@ -46,7 +57,7 @@ def filter_df_in(df, filter_field, filter_list):
 def filter_by_timestamp(df):
     idxs = []
     for index, row in df.iterrows():
-        time = dt.datetime.fromtimestamp(int(row['AddedOnTick']) / 1000).time()
+        time = pd.to_datetime(row['AddedOnTick'], unit='ms').time()
         seconds = dt.timedelta(minutes=time.minute, seconds=time.second).seconds
         t = int(seconds // 55)
         if (55 * t <= seconds) and (seconds <= 55 * t + 5):
@@ -132,14 +143,16 @@ def get_player_id_by_dir_name(dir_name):
 
 def aggregate_crowd():
     dirs = get_all_files_in_dirs(crowd_file_path)
+    print(dirs)
     pd.DataFrame()
     i = 0
     for dir in dirs:
         player_id = get_player_id_by_dir_name(dir['dir'])
         print('started ', player_id)
         for file in dir['files']:
-            i = aggregate_by_daytime(path=os.path.join(crowd_file_path, dir['dir'], file), player=player_id, i=i)
+            # i = aggregate_by_daytime(path=os.path.join(crowd_file_path, dir['dir'], file), player=player_id, i=i)
             # i = aggregate_by_weekday(path=os.path.join(crowd_file_path, dir['dir'], file), player=player_id, i=i)
+            i = aggregate_by_month(player=player_id, path=os.path.join(crowd_file_path, dir['dir'], file), i=i)
 
 
 # print(get_all_files_in_dirs(crowd_file_path))
