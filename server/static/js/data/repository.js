@@ -45,7 +45,7 @@ const MakeRepositoty = _ => {
 
     r.get_company_list
     =   (_ = {}) =>
-    POST({url: '', data: {}, returns: resp => resp.list})
+    POST({url: 'get_campany', data: {}, returns: resp => resp.list})
 
     return r
 
