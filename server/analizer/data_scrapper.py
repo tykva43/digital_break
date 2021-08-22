@@ -1,5 +1,5 @@
 import calendar
-import datetime
+import datetime as dt
 import os
 
 import pandas as pd
@@ -29,7 +29,7 @@ def get_all_weekdays_dates(month, year, weekday):
     weekday_dates = []
     days_in_month = calendar.monthrange(year, month)[1]
     for day in range(1, days_in_month + 1):
-        date = datetime.date(year=year, month=month, day=day)
+        date = dt.date(year=year, month=month, day=day)
         if date.weekday() + 1 == weekday:
             weekday_dates.append(date)
     return [len(weekday_dates), weekday_dates]
@@ -44,15 +44,14 @@ def filter_df_in(df, filter_field, filter_list):
 
 
 def filter_by_timestamp(df):
-    indexes_for_deletion = []
+    idxs = []
     for index, row in df.iterrows():
-        time = datetime.datetime.fromtimestamp(int(row['AddedOnTick'])/1000).time()
-        seconds = datetime.timedelta(minutes=time.minute, seconds=time.second).seconds
+        time = dt.datetime.fromtimestamp(int(row['AddedOnTick']) / 1000).time()
+        seconds = dt.timedelta(minutes=time.minute, seconds=time.second).seconds
         t = int(seconds // 55)
-        if (55 * t > seconds) or (55 * t + 5 > seconds):
-            indexes_for_deletion.append(index)
-    df.drop(indexes_for_deletion)
-    return df
+        if (55 * t <= seconds) and (seconds <= 55 * t + 5):
+            idxs.append(index)
+    return df.iloc[idxs]
 
 
 def aggregate_by_weekday(path, player, i):
@@ -86,17 +85,20 @@ def aggregate_by_daytime(path, player, i):
     for weekday in range(1, 8):
         [_, dates] = get_all_weekdays_dates(month=date.month, year=date.year, weekday=weekday)
         filtered_df = filter_df_in(df=raw_df, filter_field='AddedOnDate', filter_list=dates)
-        filtered_df = filter_by_timestamp(filtered_df)
+        # df = filter_by_timestamp(df)
         for h in range(24):
-            filtered_df = filtered_df[datetime.datetime.fromtimestamp(int(filtered_df['AddedOnTick'])/1000).hour == h]
+            filtered_df['time'] = pd.to_datetime(filtered_df['AddedOnTick'], unit='ms')
+            filtered_df['hour'] = filtered_df['time'].dt.hour
+            filtered_df1 = filter_df_in(df=filtered_df, filter_field='hour', filter_list=[h])
+            # filtered_df1 = filtered_df[filtered_df['hour'] == h]
+            # filtered_df[datetime.datetime.fromtimestamp(int(filtered_df['AddedOnTick'])/1000).hour == h]
             l_by_week.append({'player': player,
                               'type': 'daytime',
                               'param': 'by_week',
                               'month': date.month,
                               'year': date.year,
-                              'additional': weekday,
                               'hour': h,
-                              'total': filtered_df.Mac.count()})
+                              'total': filtered_df1.Mac.count()})
     if i > 0:
         pd.DataFrame(l_by_week).to_csv(path_to_save, mode='a', header=False)
     else:
@@ -115,7 +117,7 @@ def get_all_files_in_dirs(path):
     return file_list
 
 
-def get_players():
+def get_players(path):
     file_list = []
     for root, dirs, files in os.walk(path):
         for dir in dirs:
@@ -138,6 +140,7 @@ def aggregate_crowd():
         for file in dir['files']:
             i = aggregate_by_daytime(path=os.path.join(crowd_file_path, dir['dir'], file), player=player_id, i=i)
             # i = aggregate_by_weekday(path=os.path.join(crowd_file_path, dir['dir'], file), player=player_id, i=i)
+
 
 # print(get_all_files_in_dirs(crowd_file_path))
 aggregate_crowd()
